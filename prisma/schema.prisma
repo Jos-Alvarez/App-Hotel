@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id            String    @id @default(cuid())
+  name          String
+  description   String
+  pricePerNight Float
+  imageUrl      String?   // Para mostrar una imagen en el listado
+  capacity      Int       @default(2)
+  
+  bookings      Booking[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Booking {
+  id                      String   @id @default(cuid())
+  roomId                  String
+  room                    Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  
+  // ID del usuario proporcionado por Clerk
+  clerkUserId             String   
+
+  checkInDate             DateTime
+  checkOutDate            DateTime
+  
+  totalPrice              Float
+  
+  // Estado del pago
+  status                  BookingStatus @default(PENDING)
+  
+  // ID de la preferencia de pago de Mercado Pago
+  mercadoPagoPreferenceId String?       
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([roomId])
+  @@index([clerkUserId])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
