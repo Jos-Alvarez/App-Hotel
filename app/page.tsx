@@ -3,6 +3,7 @@ import { RoomCard } from '@/components/RoomCard'
 import { UserButton, SignInButton } from '@clerk/nextjs'
 import { auth } from '@clerk/nextjs/server'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default async function HomePage() {
   const rooms = await getRooms()
@@ -16,7 +17,12 @@ export default async function HomePage() {
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Hot-el</h1>
           <nav className="flex items-center gap-4">
             {userId ? (
-              <UserButton />
+              <>
+                <Link href="/admin/bookings" className="text-sm font-medium hover:underline underline-offset-4">
+                  Panel Admin
+                </Link>
+                <UserButton />
+              </>
             ) : (
               <SignInButton mode="modal">
                 <Button variant="default">Iniciar Sesión</Button>
