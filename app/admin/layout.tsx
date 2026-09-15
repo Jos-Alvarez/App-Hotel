@@ -21,6 +21,9 @@ export default function AdminLayout({
           <Link href="/admin/bookings" className="block px-4 py-2 rounded hover:bg-slate-800 transition">
             Reservas
           </Link>
+          <Link href="/admin/chat" className="block px-4 py-2 rounded bg-indigo-600/20 text-indigo-400 font-medium hover:bg-indigo-600/30 transition mt-4">
+            ✨ Asistente IA
+          </Link>
           <Link href="/" className="block px-4 py-2 rounded hover:bg-slate-800 transition text-slate-400 mt-8">
             Volver a la Web
           </Link>
