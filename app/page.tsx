@@ -1,13 +1,15 @@
 import { getRooms } from '@/actions/admin'
 import { RoomCard } from '@/components/RoomCard'
-import { UserButton, SignInButton } from '@clerk/nextjs'
-import { auth } from '@clerk/nextjs/server'
+import { auth, signOut } from '@/auth'
+import { UserMenu } from '@/components/UserMenu'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export default async function HomePage() {
   const rooms = await getRooms()
-  const { userId } = await auth()
+  const session = await auth()
+  const userId = session?.user?.id
+  const role = session?.user?.role
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -17,16 +19,16 @@ export default async function HomePage() {
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Hot-el</h1>
           <nav className="flex items-center gap-4">
             {userId ? (
-              <>
-                <Link href="/admin/bookings" className="text-sm font-medium hover:underline underline-offset-4">
-                  Panel Admin
-                </Link>
-                <UserButton />
-              </>
+              <UserMenu user={{ name: session?.user?.name, email: session?.user?.email, role: role }} />
             ) : (
-              <SignInButton mode="modal">
-                <Button variant="default">Iniciar Sesión</Button>
-              </SignInButton>
+              <div className="flex items-center gap-2">
+                <Link href="/login">
+                  <Button variant="outline">Iniciar Sesión</Button>
+                </Link>
+                <Link href="/register">
+                  <Button variant="default">Registrarse</Button>
+                </Link>
+              </div>
             )}
           </nav>
         </div>
@@ -44,7 +46,7 @@ export default async function HomePage() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.map(room => (
-            <RoomCard key={room.id} room={room} />
+            <RoomCard key={room.id} room={room} isSignedIn={!!userId} />
           ))}
           {rooms.length === 0 && (
             <div className="col-span-full text-center py-12 text-slate-500">

@@ -1,21 +1,18 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { auth } from '@/auth'
 import { revalidatePath } from 'next/cache'
 
-// Verificar si el usuario es administrador leyendo los metadatos directamente
+// Verificar si el usuario es administrador
 export async function checkAdmin() {
-  const { userId } = await auth();
+  const session = await auth();
   
-  if (!userId) {
+  if (!session?.user?.id) {
     throw new Error('No autorizado');
   }
 
-  const client = await clerkClient();
-  const user = await client.users.getUser(userId);
-  
-  if (user.publicMetadata.role !== 'admin') {
+  if (session.user.role !== 'admin') {
     throw new Error('No autorizado: Se requiere rol de administrador');
   }
 }

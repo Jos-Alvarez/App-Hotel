@@ -2,16 +2,15 @@
 
 import { useState } from 'react'
 import { Room } from '@prisma/client'
-import { useAuth, useClerk } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 import { createBookingAndPreference } from '@/actions/booking'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-export function RoomCard({ room }: { room: Room }) {
-  const { isSignedIn } = useAuth()
-  const { openSignIn } = useClerk()
+export function RoomCard({ room, isSignedIn }: { room: Room, isSignedIn: boolean }) {
+  const router = useRouter()
   
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
@@ -25,7 +24,7 @@ export function RoomCard({ room }: { room: Room }) {
     }
 
     if (!isSignedIn) {
-      openSignIn()
+      router.push('/login')
       return
     }
 

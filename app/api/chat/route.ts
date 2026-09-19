@@ -2,15 +2,15 @@ import { openai } from '@ai-sdk/openai';
 import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from '@/auth';
 
 // Permitir streaming response de hasta 30 segundos
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   // Verificación básica de seguridad (solo usuarios autenticados)
-  const { userId } = await auth();
-  if (!userId) {
+  const session = await auth();
+  if (!session?.user?.id) {
     return new Response('Unauthorized', { status: 401 });
   }
 

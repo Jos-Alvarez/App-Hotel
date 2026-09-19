@@ -31,7 +31,7 @@ export default async function BookingsPage() {
             {bookings.map((booking) => (
               <TableRow key={booking.id}>
                 <TableCell className="font-medium">{booking.room.name}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">{booking.clerkUserId}</TableCell>
+                <TableCell className="text-xs text-muted-foreground">{booking.userId}</TableCell>
                 <TableCell>{booking.checkInDate.toLocaleDateString()}</TableCell>
                 <TableCell>{booking.checkOutDate.toLocaleDateString()}</TableCell>
                 <TableCell>${booking.totalPrice}</TableCell>

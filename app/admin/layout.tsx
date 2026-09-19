@@ -1,11 +1,14 @@
 import Link from 'next/link'
-import { UserButton } from '@clerk/nextjs'
+import { auth } from '@/auth'
+import { UserMenu } from '@/components/UserMenu'
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await auth();
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Sidebar */}
@@ -29,9 +32,9 @@ export default function AdminLayout({
           </Link>
         </nav>
         
-        <div className="p-4 border-t border-slate-800 flex items-center gap-3">
-          <UserButton />
+        <div className="p-4 border-t border-slate-800 flex items-center justify-between gap-3">
           <span className="text-sm font-medium">Administrador</span>
+          <UserMenu user={{ name: session?.user?.name, email: session?.user?.email, role: 'admin' }} />
         </div>
       </aside>
 

@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma'
 import { preference } from '@/lib/mercadopago'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/auth'
 
 /**
  * Verifica si una habitación está disponible en un rango de fechas.
@@ -37,7 +37,8 @@ export async function checkAvailability(roomId: string, checkIn: Date, checkOut:
  */
 export async function createBookingAndPreference(roomId: string, checkInStr: string, checkOutStr: string) {
   // 1. Validar sesión del usuario
-  const { userId } = await auth();
+  const session = await auth();
+  const userId = session?.user?.id;
   
   if (!userId) {
     throw new Error('Debes iniciar sesión para reservar');
@@ -74,7 +75,7 @@ export async function createBookingAndPreference(roomId: string, checkInStr: str
   const booking = await prisma.booking.create({
     data: {
       roomId: room.id,
-      clerkUserId: userId,
+      userId: userId,
       checkInDate,
       checkOutDate,
       totalPrice,
